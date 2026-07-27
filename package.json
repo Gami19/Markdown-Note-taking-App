@@ -1,0 +1,27 @@
+{
+  "name": "markdown-note-taking-app",
+  "version": "1.0.0",
+  "description": "[project URL](https://roadmap.sh/projects/markdown-note-taking-app)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gami19/Markdown-Note-taking-App.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Gami19/Markdown-Note-taking-App/issues"
+  },
+  "homepage": "https://github.com/Gami19/Markdown-Note-taking-App#readme",
+  "dependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.1",
+    "express": "^5.2.1",
+    "typescript": "^7.0.2"
+  }
+}
