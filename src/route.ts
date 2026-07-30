@@ -60,7 +60,7 @@ router.get('/notes/:filename', async(req: Request, res: Response) => {
         try{
             const fileContent = await fs.readFile(markdownPath, 'utf-8');
             res.send(fileContent);
-            console.log('特定のファイルを送信')
+            console.log('特定のファイルを送信');
         }catch(error){
             console.log(error);
         }
