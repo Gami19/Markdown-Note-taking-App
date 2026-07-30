@@ -1,6 +1,6 @@
 import express, { type Express, type Request, type Response } from 'express';
 import path from 'node:path';
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
 
 const app: Express = express();
 const port = 3000;
@@ -16,21 +16,20 @@ app.get('/', (req: Request, res: Response) => {
 
 app.post('/notes', async(req: Request, res: Response) => {
 
-    // data に格納
-    const data = req.body.note;
+    // リクエストを保持
+    const fileData = req.body.note;
 
     // ファイルタイトル
     const fileName = `${req.body.title}.md`;
     const filePath = path.join(uploadDir, fileName);
 
     // /public に保存
-    await fs.writeFile(filePath, data, err => {
-        if (err) {
-            console.error(err);
-        } else {
-            res.send('メモを保存しました');
-        }  
-    })
+    try{
+        await fs.writeFile(filePath, fileData);
+        res.send('メモを保存しました');
+    } catch(error){
+        console.log(error);
+    }
 })
 
 app.listen(port, () =>{
