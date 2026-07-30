@@ -9,10 +9,12 @@ const uploadDir = path.join(process.cwd(), 'public');
 // Routerの設置
 const router = express.Router()
 
+// Health
 router.get('/', (res: Response) => {
     res.send('Hello, Notes API!');
 })
 
+// store request
 router.post('/notes', async(req: Request, res: Response) => {
 
     const saveData: SaveData = req.body;
@@ -29,6 +31,16 @@ router.post('/notes', async(req: Request, res: Response) => {
         await fs.writeFile(filePath, fileData);
         res.send('メモを保存しました');
     } catch(error){
+        console.log(error);
+    }
+})
+
+// get a list of MD
+router.get('/notes',async(req: Request, res: Response) => {
+    try{
+        const readDir = await fs.readdir(uploadDir);
+        res.json(readDir);
+    }catch(error){
         console.log(error);
     }
 })
