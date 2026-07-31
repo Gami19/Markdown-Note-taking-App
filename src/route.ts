@@ -3,6 +3,7 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 import type { SaveData } from './type.js'
 import { marked } from 'marked';
+import { createLinter ,loadTextlintrc } from 'textlint';
 
 // 保存先パスを作成
 const uploadDir = path.join(process.cwd(), 'public');
@@ -60,14 +61,8 @@ router.get('/notes/:filename', async(req: Request, res: Response) => {
         // read the MD
         try{
             const fileContent = await fs.readFile(markdownPath, 'utf-8');
-            // res.send(fileContent);
-            // console.log('特定のファイルを送信');
-
-            // render html
-            const htmlContent = marked.parse(fileContent);
-            res.send(htmlContent)
-            console.log('Sent HTML response')
-
+            res.send(fileContent);
+            console.log('Sent Markdown');
         }catch(error){
             console.log(error);
         }
@@ -77,4 +72,66 @@ router.get('/notes/:filename', async(req: Request, res: Response) => {
     }
 
 })
+
+// get the content as HTML
+router.get('/notes/:filename/html', async(req: Request, res: Response) => {
+    // get parameters
+    const targetFile= req.params.filename;
+    
+    // check params
+    if (typeof targetFile === "string"){
+
+        const markdownPath = path.join(uploadDir, `${targetFile}.md`);
+
+        // read the MD
+        try{
+            const fileContent = await fs.readFile(markdownPath, 'utf-8');
+
+            // render html
+            const htmlContent = marked.parse(fileContent);
+            res.send(htmlContent)
+            console.log('Sent HTML response')
+        }catch(error){
+            console.log(error);
+        }
+
+    } else {
+        res.status(400).send("Not params string");
+    }
+
+
+})
+
+// fix the grammar of html
+router.get('/notes/:filename/fix', async(req: Request, res: Response) => {
+    // get parameters
+    const targetFile= req.params.filename;
+    
+    // check params
+    if (typeof targetFile === "string"){
+
+        const markdownPath = path.join(uploadDir, `${targetFile}.md`);
+
+        // read the MD
+        try{
+            const fileContent = await fs.readFile(markdownPath, 'utf-8');
+
+
+            // fix the grammar of html
+            const descriptor = await loadTextlintrc();
+            const linter = await createLinter({descriptor});
+            const linterResults = await linter.lintText(fileContent,markdownPath);
+
+            res.json(linterResults);
+
+        }catch(error){
+            console.log(error);
+        }
+
+    } else {
+        res.status(400).send("Not params string");
+    }
+})
+
+
 export default router
