@@ -2,8 +2,7 @@ import express, { type Request, type Response } from 'express';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import type { SaveData } from './type.js'
-import { marked } from 'marked';
-import { createLinter ,loadTextlintrc } from 'textlint';
+import { markdownToHtml , checkGrammar} from './services.js';
 
 // 保存先パスを作成
 const uploadDir = path.join(process.cwd(), 'public');
@@ -88,7 +87,7 @@ router.get('/notes/:filename/html', async(req: Request, res: Response) => {
             const fileContent = await fs.readFile(markdownPath, 'utf-8');
 
             // render html
-            const htmlContent = marked.parse(fileContent);
+            const htmlContent = markdownToHtml(fileContent);
             res.send(htmlContent)
             console.log('Sent HTML response')
         }catch(error){
@@ -118,10 +117,7 @@ router.get('/notes/:filename/fix', async(req: Request, res: Response) => {
 
 
             // fix the grammar of html
-            const descriptor = await loadTextlintrc();
-            const linter = await createLinter({descriptor});
-            const linterResults = await linter.lintText(fileContent,markdownPath);
-
+            const linterResults = await checkGrammar(fileContent,markdownPath);
             res.json(linterResults);
 
         }catch(error){
