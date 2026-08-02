@@ -32,7 +32,7 @@ router.post('/notes', async(req: Request, res: Response) => {
         res.send('Store file');
     } catch(error){
         console.log(error);
-        res.status(400).send('Failed to save note')
+        res.status(500).send('Failed to save note')
     }
 })
 
@@ -43,7 +43,7 @@ router.get('/notes',async(req: Request, res: Response) => {
         res.json(readDir);
     }catch(error){
         console.log(error);
-        res.status(400).send('Failed to get note')
+        res.status(500).send('Failed to get note')
     }
 })
 
@@ -94,7 +94,7 @@ router.get('/notes/:filename/html', async(req: Request, res: Response) => {
             console.log('Sent HTML response')
         }catch(error){
             console.log(error);
-            res.status(500).send('Failed to check grammar')
+            res.status(400).send('Failed to sent HTML response')
         }
 
     } else {
