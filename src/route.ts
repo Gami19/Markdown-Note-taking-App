@@ -19,19 +19,20 @@ router.post('/notes', async(req: Request, res: Response) => {
 
     const saveData: SaveData = req.body;
     
-    // リクエストを保持
+    // get req
     const fileData = saveData.note;
 
-    // ファイルタイトル
+    // file name
     const fileName = `${saveData.title}.md`;
     const filePath = path.join(uploadDir, fileName);
 
-    // /public に保存
+    // store in /public
     try{
         await fs.writeFile(filePath, fileData);
-        res.send('メモを保存しました');
+        res.send('Store file');
     } catch(error){
         console.log(error);
+        res.status(400).send('Failed to save note')
     }
 })
 
@@ -42,6 +43,7 @@ router.get('/notes',async(req: Request, res: Response) => {
         res.json(readDir);
     }catch(error){
         console.log(error);
+        res.status(400).send('Failed to get note')
     }
 })
 
@@ -121,6 +123,7 @@ router.get('/notes/:filename/fix', async(req: Request, res: Response) => {
 
         }catch(error){
             console.log(error);
+            res.status(500).send('Failed to check grammar');
         }
 
     } else {
