@@ -65,6 +65,7 @@ router.get('/notes/:filename', async(req: Request, res: Response) => {
             console.log('Sent Markdown');
         }catch(error){
             console.log(error);
+            res.status(500).send('Failed to read the markdown file')
         }
 
     } else {
@@ -93,6 +94,7 @@ router.get('/notes/:filename/html', async(req: Request, res: Response) => {
             console.log('Sent HTML response')
         }catch(error){
             console.log(error);
+            res.status(500).send('Failed to check grammar')
         }
 
     } else {
