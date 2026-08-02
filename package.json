@@ -21,9 +21,11 @@
   "dependencies": {
     "@types/express": "^5.0.6",
     "@types/marked": "^5.0.2",
+    "@types/multer": "^2.2.0",
     "@types/node": "^26.1.1",
     "express": "^5.2.1",
     "marked": "^18.0.7",
+    "multer": "^2.2.0",
     "textlint": "^15.7.1",
     "textlint-rule-preset-japanese": "^10.0.4",
     "textlint-rule-write-good": "^2.0.0",
