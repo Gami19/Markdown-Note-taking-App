@@ -2,10 +2,9 @@ import express, { type Request, type Response } from 'express';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import type { SaveData } from './type.js'
-import { markdownToHtml , checkGrammar} from './services.js';
+import { markdownToHtml , checkGrammar} from './service/note.js';
+import { upload, uploadDir } from './service/uploadHander.js'
 
-// 保存先パスを作成
-const uploadDir = path.join(process.cwd(), 'public');
 
 // Routerの設置
 const router = express.Router()
@@ -127,6 +126,15 @@ router.get('/notes/:filename/fix', async(req: Request, res: Response) => {
     } else {
         res.status(400).send("Not params string");
     }
+})
+
+// uploaded .md
+router.post('/notes/upload', upload.single('file'), async(req: Request, res: Response) => {
+    if(! req.file){
+        res.status(400).send("Not file");
+        return;
+    }
+    res.send(`Upload ${req.file.originalname}!\n`);
 })
 
 
