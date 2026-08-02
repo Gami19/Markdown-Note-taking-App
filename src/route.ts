@@ -2,10 +2,9 @@ import express, { type Request, type Response } from 'express';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import type { SaveData } from './type.js'
-import { markdownToHtml , checkGrammar} from './services.js';
+import { markdownToHtml , checkGrammar} from './service/note.js';
+import { upload, uploadDir } from './service/uploadHander.js'
 
-// 保存先パスを作成
-const uploadDir = path.join(process.cwd(), 'public');
 
 // Routerの設置
 const router = express.Router()
@@ -20,19 +19,20 @@ router.post('/notes', async(req: Request, res: Response) => {
 
     const saveData: SaveData = req.body;
     
-    // リクエストを保持
+    // get req
     const fileData = saveData.note;
 
-    // ファイルタイトル
+    // file name
     const fileName = `${saveData.title}.md`;
     const filePath = path.join(uploadDir, fileName);
 
-    // /public に保存
+    // store in /public
     try{
         await fs.writeFile(filePath, fileData);
-        res.send('メモを保存しました');
+        res.send('Store file');
     } catch(error){
         console.log(error);
+        res.status(500).send('Failed to save note')
     }
 })
 
@@ -43,6 +43,7 @@ router.get('/notes',async(req: Request, res: Response) => {
         res.json(readDir);
     }catch(error){
         console.log(error);
+        res.status(500).send('Failed to get note')
     }
 })
 
@@ -64,6 +65,7 @@ router.get('/notes/:filename', async(req: Request, res: Response) => {
             console.log('Sent Markdown');
         }catch(error){
             console.log(error);
+            res.status(500).send('Failed to read the markdown file')
         }
 
     } else {
@@ -92,6 +94,7 @@ router.get('/notes/:filename/html', async(req: Request, res: Response) => {
             console.log('Sent HTML response')
         }catch(error){
             console.log(error);
+            res.status(400).send('Failed to sent HTML response')
         }
 
     } else {
@@ -122,11 +125,21 @@ router.get('/notes/:filename/fix', async(req: Request, res: Response) => {
 
         }catch(error){
             console.log(error);
+            res.status(500).send('Failed to check grammar');
         }
 
     } else {
         res.status(400).send("Not params string");
     }
+})
+
+// uploaded .md
+router.post('/notes/upload', upload.single('file'), async(req: Request, res: Response) => {
+    if(! req.file){
+        res.status(400).send("Not file");
+        return;
+    }
+    res.send(`Upload ${req.file.originalname}!\n`);
 })
 
 

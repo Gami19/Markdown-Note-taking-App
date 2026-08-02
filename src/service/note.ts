@@ -15,6 +15,7 @@ export async function checkGrammar(markdown: string, markdownpath: string){
 
     // difine textlint
     const descriptor = await loadTextlintrc();
+    console.log(descriptor);
     const linter = await createLinter({descriptor});
     const linterResults = await linter.lintText(markdown,markdownpath);
 
